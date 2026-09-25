@@ -49,8 +49,24 @@ function App() {
     setCheckoutStep('payment');
   };
 
-  const handleCompleteOrder = () => {
+  const handleCompleteOrder = async () => {
     setCheckoutStep('success');
+    
+    // Save order to PostgreSQL backend
+    try {
+      await fetch('https://mahabole-farms.onrender.com/api/orders', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          customer_name: formData.name,
+          total_amount: totalPrice
+        }),
+      });
+    } catch (err) {
+      console.error('Failed to save order to database:', err);
+    }
     
     let message = `🌿 *NEW ORDER - MAHABOLE FARMS* 🌿%0A%0A`;
     message += `👤 *Customer:* ${formData.name}%0A`;
